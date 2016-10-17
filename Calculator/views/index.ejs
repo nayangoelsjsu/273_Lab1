@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Calculator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  </head>
+  <body>
+  <div class="col-md-6 col-md-offset-3" style="padding: 100px">
+    <h1>Calculator</h1>
+    <table>
+        <tr>
+            <input type="text" name="display" id="display" disabled="disabled" class="form-control" style="width:160px"> 
+        </tr>
+        
+        <tr>
+            <td> 
+                <input type="button" name="1" value="1" id="1" onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td> 
+                <input type="button" name="2" value="2" id="2"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td> 
+                <input type="button" name="3" value="3" id="3"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td></td>
+            <td> 
+                <input type="button" name="+" value="+" id="+" onclick="operator(this)" class="btn btn-default">
+            </td>
+        </tr>
+
+        <tr>
+            <td> 
+                <input type="button" name="4" value="4" id="4"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td> 
+                <input type="button" name="5" value="5" id="5"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td> 
+                <input type="button" name="6" value="6" id="6"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td></td>
+            <td> 
+                <input type="button" name="-" value="-" id="-" onclick="operator(this)" class="btn btn-default">
+            </td>
+        </tr>
+
+        <tr>
+            <td> 
+                <input type="button" name="7" value="7" id="7"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td> 
+                <input type="button" name="8" value="8" id="8"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td> 
+                <input type="button" name="9" value="9" id="9"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td></td>
+            <td> 
+                <input type="button" name="*" value="*" id="*" onclick="operator(this)" class="btn btn-default">
+            </td>
+        </tr>
+
+        <tr>
+            <td> 
+                <input type="button" name="C" value="C" id="C"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td> 
+                <input type="button" name="0" value="0" id="0"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td> 
+                <input type="button" name="AC" value="AC" id="AC"onclick="appender(this)" class="btn btn-default">
+            </td>
+            <td></td>
+            <td> 
+                <input type="button" name="/" value="/" id="/" onclick="operator(this)" class="btn btn-default">
+            </td>
+        </tr>
+        <tr>
+        <td>
+            <input type="button" name="." id="." value="." onclick="appender(this)" class="btn btn-default">
+        </td>
+         <td>
+            <input type="button" name="+/-" id="+/-" value="+/-" onclick="neg()" class="btn btn-default">
+        </td>
+        <td>
+            <input type="button" name="=" id="=" value="=" onclick="operator(this)" class="btn btn-default">
+            </td>
+        </tr>
+    </table>
+    </div>
+
+    <script type="text/javascript">
+
+        var disp= document.getElementById('display');
+        var arr= "";
+        // var i=0;
+        var flag=0;
+        var neg=0;
+
+        var appender=function(buttonObj){
+            if(flag==1){
+                disp.value=null;
+                flag=0;
+            }
+            if(buttonObj.value=='AC'){
+                console.log("pressed AC");
+                disp.value=null;
+                arr="";
+            }
+            else if(buttonObj.value== 'C'){
+                disp.value=null;
+            }
+            else{
+            console.log(disp.value);
+            var n= buttonObj.value;
+            disp.value+=n;
+        }
+        }
+
+        var neg=function(){
+            if(flag==1){
+                disp.value=null;
+                flag=0;
+            }
+            console.log(disp.value);
+            var n= '-';
+            neg=1;
+            disp.value+=n;
+        }
+
+        var operator= function(buttonObj){
+            if(flag==1){
+                console.log("yahan");
+                arr= arr.substring(0,(arr.length-1));
+                console.log(buttonObj.value);
+                arr=arr.concat(buttonObj.value);
+                console.log(arr);
+            }
+           else{ 
+           var str= disp.value;
+           arr=arr.concat(',');
+           arr= arr.concat(str);
+           arr=arr.concat(',');
+           console.log(arr);
+           arr= arr.concat(buttonObj.value);
+           console.log(arr);
+           flag=1;
+           if(buttonObj.value=='='){
+            serverSend();
+        }
+           }
+        }
+
+        var serverSend = function(){
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState < 4)
+                     disp.value = "Loading...";
+                else if (xhttp.readyState === 4) {
+                    if (xhttp.status == 200 && xhttp.status < 300)
+                    disp.value = xhttp.responseText;
+             }
+        }
+
+            xhttp.open("POST", "/calc", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            var str= "arr="+arr;
+            console.log(str);
+            xhttp.send(str);
+            }
+
+    </script>
+  </body>
+  </html>
+</html>
